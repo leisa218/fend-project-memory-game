@@ -43,10 +43,11 @@ const modal = document.getElementById('myModal');
 // Get the <span> element that closes the modal
 const close = document.getElementsByClassName("close")[0];
 
+// get span element in modal box
 const moves = document.getElementsByClassName('moves')[1];
 
+// get time element in modal box
 const time = document.querySelector('.time');
-console.log(time);
 
 // start and end time variables
 let startTime, endTime;
@@ -87,7 +88,7 @@ const displayCards = function(){
 	// iterate through card array and remove all classes
 	//then appennd the shuffled cards into deck container
 	for (i=0; i< cardList.length; i++){
-		cardList[i].classList.remove('open', 'show', 'match');
+		cardList[i].classList.remove('open', 'show', 'match', 'animated', 'tada');
 		deck.appendChild(cardList[i]);
 	}
 	// disable stars
@@ -163,9 +164,11 @@ function checkMatch(){
 	let card_two_symbol = card_two.innerHTML;
 	// check if symbol of elements match
 	if(card_one_symbol === card_two_symbol){
+		card_one.classList.remove('animated', 'flipInY');
+		card_two.classList.remove('animated', 'flipInY');
 		// add classes to elements 
-		card_one.classList.add('match');
-		card_two.classList.add('match');
+		card_one.classList.add('match', 'animated', 'tada');
+		card_two.classList.add('match', 'animated', 'tada');
 		// push elements to list of matching elements
 		listMatchCards.push(card_one, card_two);
 		matchCounter +=1;
@@ -175,8 +178,8 @@ function checkMatch(){
 		// timeout needed 
 		setTimeout(function(){
 			// remove classes from elements
-			card_one.classList.remove('open', 'show');
-			card_two.classList.remove('open', 'show');
+			card_one.classList.remove('open', 'show', 'animated', 'flipInY');
+			card_two.classList.remove('open', 'show', 'animated', 'flipInY');
 		}, 1000)	
 		// count moves
 		checkMovesCounter();
@@ -197,7 +200,7 @@ function pushCardToOpenList(e){
 }
 //Open Card Functinon
 function openCard(target){
-	target.target.classList.add('open', 'show', 'annimate', 'flipInY');
+	target.target.classList.add('open', 'show', 'animated', 'flipInY');
 	pushCardToOpenList(target.target);
 }
 
