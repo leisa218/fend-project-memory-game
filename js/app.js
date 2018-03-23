@@ -1,5 +1,5 @@
 /*
- * Create a list that holds all of your cards
+ * Variables
  */
 // container for cards 
 const deck = document.querySelector('.deck ');
@@ -22,6 +22,8 @@ let matchCounter = 0;
 // variable for moves
 let movesCounter = 0;
 
+let ratingCounter = 0;
+
 //container for moves
 const movesContainer = document.querySelector('.moves');
 
@@ -37,17 +39,23 @@ let starsArray = [...stars];
 // get element for restart button
 const reloadButton = document.querySelector('.restart');
 
+// get element for replay game from modal bos
+const replayButton = document.querySelector('.replay');
+
 // Get the modal
 const modal = document.getElementById('myModal');
 
 // Get the <span> element that closes the modal
-const close = document.getElementsByClassName("close")[0];
+const close = document.querySelector(".close");
 
-// get span element in modal box
-const moves = document.getElementsByClassName('moves')[1];
+// get span moves element in modal box
+const moves = document.querySelector('.movesbox');
 
 // get time element in modal box
 const time = document.querySelector('.time');
+
+// get ratingbox element in modal box
+const ratingbox = document.querySelector('.ratingbox');
 
 // start and end time variables
 let startTime, endTime;
@@ -93,11 +101,11 @@ const displayCards = function(){
 	}
 	// disable stars
 	movesContainer.innerHTML = movesCounter;
-	for(i=0; i< starsArray.length; i++){
+	for(i=0; i < starsArray.length; i++){
 		starsArray[i].classList.add('disabled');
 	}
 	//eventlistener for all Cards 
-	for (let i=0; i <cardsArray.length; i++){
+	for (let i=0; i < cardsArray.length; i++){
 	    cards = cardsArray[i];
 	    cards.addEventListener('click', openCard);
 	}
@@ -123,21 +131,30 @@ function gameEnd(){
 	modal.style.display = "block";
 	moves.innerHTML = movesCounter;
 	time.innerHTML = endTime;
+	ratingbox.innerHTML = '';
+	for (let i = 0; i < ratingCounter; i++){
+		let star = document.createElement('i');
+		star.classList.add('fa', 'fa-star');
+		ratingbox.appendChild(star);
+	}
 }
 
 function checkRating(){
 	//console.log(movesCounter+ 'inside check rating function');
 	if(movesCounter >= 24 ){
 		starsArray[0].classList.remove('disabled');
+		ratingCounter = 1;
 	}
 	if(movesCounter <= 24 && movesCounter >= 15){
 		starsArray[0].classList.remove('disabled');
 		starsArray[1].classList.remove('disabled');
+		ratingCounter = 2;
 	}
 	if(movesCounter >= 8 && movesCounter <= 15){
 		starsArray[0].classList.remove('disabled');
 		starsArray[1].classList.remove('disabled');
 		starsArray[2].classList.remove('disabled');
+		ratingCounter = 3;
 	}
 }
 
@@ -206,6 +223,7 @@ function openCard(target){
 
 // set everything back to null and start the game again.
 function restartGame(){
+	modal.style.display = "none";
 	listMatchCards = [];
 	listOpenCards = [];
 	movesCounter = 0;
@@ -213,8 +231,9 @@ function restartGame(){
 	displayCards();
 }
 
-// eventlistener for reload butten
+// eventlistener for reload and replay butten
 reloadButton.addEventListener('click', restartGame);
+replayButton.addEventListener('click', restartGame);
 
 
 // When the user clicks on <span> (x), close the modal
@@ -228,11 +247,12 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
-
+// register the time on game start
 function start() {
   startTime = new Date();
 };
 
+// register the time on game end and return the time
 function end() {
   endTime = new Date();
   var timeDiff = endTime - startTime; //in ms
