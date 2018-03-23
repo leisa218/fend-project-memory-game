@@ -25,14 +25,34 @@ let movesCounter = 0;
 //container for moves
 const movesContainer = document.querySelector('.moves');
 
-//container for stars
-const starsContainer = document.querySelectorAll('.stars > li');
+// get the box with the rating
+const starsContainer = document.querySelector('.stars');
+
+//collect all stars
+const stars = document.querySelectorAll('.stars > li');
 
 // make Array from stars
-let starsArray = [...starsContainer];
+let starsArray = [...stars];
 
 // get element for restart button
 const reloadButton = document.querySelector('.restart');
+
+// Get the modal
+const modal = document.getElementById('myModal');
+
+// Get the <span> element that closes the modal
+const close = document.getElementsByClassName("close")[0];
+
+const moves = document.getElementsByClassName('moves')[1];
+
+const time = document.querySelector('.time');
+console.log(time);
+
+// start and end time variables
+let startTime, endTime;
+
+
+
 
 
 /*
@@ -58,6 +78,7 @@ function shuffle(array) {
 }
 
 const displayCards = function(){
+	start();
 	const sT = performance.now();
 	// schuffel the card array
 	let cardList = shuffle(cardsArray);
@@ -73,6 +94,11 @@ const displayCards = function(){
 	movesContainer.innerHTML = movesCounter;
 	for(i=0; i< starsArray.length; i++){
 		starsArray[i].classList.add('disabled');
+	}
+	//eventlistener for all Cards 
+	for (let i=0; i <cardsArray.length; i++){
+	    cards = cardsArray[i];
+	    cards.addEventListener('click', openCard);
 	}
 	const eT = performance.now();
 	console.log(eT);
@@ -92,8 +118,10 @@ const displayCards = function(){
 displayCards();
 
 function gameEnd(){
-		// message game end and score
-		alert('Game End');
+	end();
+	modal.style.display = "block";
+	moves.innerHTML = movesCounter;
+	time.innerHTML = endTime;
 }
 
 function checkRating(){
@@ -169,14 +197,8 @@ function pushCardToOpenList(e){
 }
 //Open Card Functinon
 function openCard(target){
-	target.target.classList.add('open', 'show');
+	target.target.classList.add('open', 'show', 'annimate', 'flipInY');
 	pushCardToOpenList(target.target);
-}
-
-//eventlistener for all Cards 
-for (let i=0; i <cardsArray.length; i++){
-    cards = cardsArray[i];
-    cards.addEventListener('click', openCard);
 }
 
 // set everything back to null and start the game again.
@@ -188,7 +210,34 @@ function restartGame(){
 	displayCards();
 }
 
-
 // eventlistener for reload butten
 reloadButton.addEventListener('click', restartGame);
+
+
+// When the user clicks on <span> (x), close the modal
+close.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+function start() {
+  startTime = new Date();
+};
+
+function end() {
+  endTime = new Date();
+  var timeDiff = endTime - startTime; //in ms
+  // strip the ms
+  timeDiff /= 1000;
+
+  // get seconds 
+  var seconds = Math.round(timeDiff);
+ 	endTime = seconds;
+}
 
