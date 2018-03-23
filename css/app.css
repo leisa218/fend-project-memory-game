@@ -90,6 +90,11 @@ h1 {
     width: 345px;
     margin-bottom: 10px;
 }
+.score-panel .timer{
+    float:left;
+    margin:0 15px 0 0;
+    width:100px;
+}
 
 .score-panel .stars {
     margin: 0;

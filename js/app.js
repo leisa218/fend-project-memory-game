@@ -51,8 +51,12 @@ const close = document.querySelector(".close");
 // get span moves element in modal box
 const moves = document.querySelector('.movesbox');
 
-// get time element in modal box
-const time = document.querySelector('.time');
+// game seconds
+let gameSeconds = 0;
+
+// get minutes and seconds in timer
+let minutes = document.querySelectorAll('.minutes');
+let seconds = document.querySelectorAll('.seconds');
 
 // get ratingbox element in modal box
 const ratingbox = document.querySelector('.ratingbox');
@@ -60,7 +64,11 @@ const ratingbox = document.querySelector('.ratingbox');
 // start and end time variables
 let startTime, endTime;
 
-
+let timer = new Timer(function() {
+	++gameSeconds;
+	seconds[0].innerHTML = formatTime(gameSeconds % 60);
+	minutes[0].innerHTML = formatTime(parseInt(gameSeconds / 60));
+}, 1000);
 
 
 
@@ -87,7 +95,7 @@ function shuffle(array) {
 }
 
 const displayCards = function(){
-	start();
+	//timer.start();
 	const sT = performance.now();
 	// schuffel the card array
 	let cardList = shuffle(cardsArray);
@@ -99,11 +107,9 @@ const displayCards = function(){
 		cardList[i].classList.remove('open', 'show', 'match', 'animated', 'tada');
 		deck.appendChild(cardList[i]);
 	}
-	// disable stars
+	// reset moves
 	movesContainer.innerHTML = movesCounter;
-	for(i=0; i < starsArray.length; i++){
-		starsArray[i].classList.add('disabled');
-	}
+
 	//eventlistener for all Cards 
 	for (let i=0; i < cardsArray.length; i++){
 	    cards = cardsArray[i];
@@ -127,10 +133,12 @@ const displayCards = function(){
 displayCards();
 
 function gameEnd(){
-	end();
+	// stop the timer
+	timer.stop();
+	seconds[1].innerHTML = formatTime(gameSeconds % 60);
+	minutes[1].innerHTML = formatTime(parseInt(gameSeconds / 60));
 	modal.style.display = "block";
 	moves.innerHTML = movesCounter;
-	time.innerHTML = endTime;
 	ratingbox.innerHTML = '';
 	for (let i = 0; i < ratingCounter; i++){
 		let star = document.createElement('i');
@@ -140,27 +148,33 @@ function gameEnd(){
 }
 
 function checkRating(){
-	//console.log(movesCounter+ 'inside check rating function');
-	if(movesCounter >= 24 ){
-		starsArray[0].classList.remove('disabled');
+	console.log(movesCounter);
+	if(movesCounter >= 35){
+		starsArray[0].classList.add('disabled');
+		starsArray[1].classList.add('disabled');
+		starsArray[2].classList.add('disabled');	
+		ratingCounter = 0;
+		console.log('schlecht')
+	}
+	if(movesCounter >= 24 && movesCounter <=35){
+		starsArray[0].classList.add('disabled');
+		starsArray[1].classList.add('disabled');
 		ratingCounter = 1;
+		console.log('im rahmen');
 	}
 	if(movesCounter <= 24 && movesCounter >= 15){
-		starsArray[0].classList.remove('disabled');
-		starsArray[1].classList.remove('disabled');
+		starsArray[0].classList.add('disabled');
 		ratingCounter = 2;
+		console.log('mitte');
 	}
 	if(movesCounter >= 8 && movesCounter <= 15){
-		starsArray[0].classList.remove('disabled');
-		starsArray[1].classList.remove('disabled');
-		starsArray[2].classList.remove('disabled');
 		ratingCounter = 3;
+		console.log('super');
 	}
 }
 
 function checkMatchCounter(){
 	if(matchCounter === 8){
-		checkRating();
 		setTimeout(function(){
 			gameEnd();
 		}, 1000)
@@ -197,9 +211,12 @@ function checkMatch(){
 			// remove classes from elements
 			card_one.classList.remove('open', 'show', 'animated', 'flipInY');
 			card_two.classList.remove('open', 'show', 'animated', 'flipInY');
+			card_one.addEventListener('click',openCard);
+			card_two.addEventListener('click',openCard);
 		}, 1000)	
 		// count moves
 		checkMovesCounter();
+		checkRating();
 	}	
 	// empty list
 	listOpenCards = [];
@@ -218,6 +235,8 @@ function pushCardToOpenList(e){
 //Open Card Functinon
 function openCard(target){
 	target.target.classList.add('open', 'show', 'animated', 'flipInY');
+	//avoid double click on already open card
+	target.target.removeEventListener('click', openCard);
 	pushCardToOpenList(target.target);
 }
 
@@ -228,6 +247,8 @@ function restartGame(){
 	listOpenCards = [];
 	movesCounter = 0;
 	matchCounter = 0;
+	timer.reset(1000);
+	gameSeconds = 0;
 	displayCards();
 }
 
@@ -247,20 +268,40 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
-// register the time on game start
-function start() {
-  startTime = new Date();
-};
 
-// register the time on game end and return the time
-function end() {
-  endTime = new Date();
-  var timeDiff = endTime - startTime; //in ms
-  // strip the ms
-  timeDiff /= 1000;
+function formatTime(val) {
+  var valString = val + "";
+  if (valString.length < 2) {
+    return "0" + valString;
+  } else {
+    return valString;
+  }
+}
 
-  // get seconds 
-  var seconds = Math.round(timeDiff);
- 	endTime = seconds;
+function Timer(fn, t) {
+  var timerObj = setInterval(fn, t);
+
+  this.stop = function() {
+    if (timerObj) {
+    	clearInterval(timerObj);
+    	timerObj = null;
+    }
+    return this;
+  }
+
+  // start timer using current settings (if it's not already running)
+  this.start = function() {
+    if (!timerObj) {
+      this.stop();
+      timerObj = setInterval(fn, t);
+    }
+    return this;
+  }
+
+  // start with new interval, stop current interval
+  this.reset = function(newT) {
+    t = newT;
+     return this.stop().start();
+  }
 }
 
