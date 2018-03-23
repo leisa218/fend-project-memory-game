@@ -1,7 +1,7 @@
-/*
- * Variables
- */
-// container for cards 
+/**
+* @description Variables
+*/
+// get deck holder element
 const deck = document.querySelector('.deck ');
 
 // get all cards
@@ -22,15 +22,16 @@ let matchCounter = 0;
 // variable for moves
 let movesCounter = 0;
 
+// variable for rating counter
 let ratingCounter = 0;
 
-//container for moves
+//container for counted moves
 const movesContainer = document.querySelector('.moves');
 
-// get the box with the rating
+// container for rating stars
 const starsContainer = document.querySelector('.stars');
 
-//collect all stars
+// collect all stars
 const stars = document.querySelectorAll('.stars > li');
 
 // make Array from stars
@@ -45,7 +46,7 @@ const replayButton = document.querySelector('.replay');
 // Get the modal
 const modal = document.getElementById('myModal');
 
-// Get the <span> element that closes the modal
+// Get the element that closes the modal
 const close = document.querySelector(".close");
 
 // get span moves element in modal box
@@ -64,8 +65,8 @@ const ratingbox = document.querySelector('.ratingbox');
 // start and end time variables
 let startTime, endTime, timer;
 
-/*
- * Display the cards on the page
+/**
+ * @description: Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
@@ -86,59 +87,88 @@ function shuffle(array) {
     return array;
 }
 
+/**
+ * @description: Creation of card board
+ *   - shuffle the list of cards using the provided "shuffle" method below
+ *   - loop through each card and create its HTML
+ *   - add each card's HTML to the page
+ */
+
 const displayCards = function(){
 	// schuffel the card array
 	let cardList = shuffle(cardsArray);
+
 	// delete the innerHTML of the deck
 	deck.innerHTML = '';
+
 	// iterate through card array and remove all classes
 	//then appennd the shuffled cards into deck container
 	for (i=0; i< cardList.length; i++){
 		cardList[i].classList.remove('open', 'show', 'match', 'animated', 'tada');
 		deck.appendChild(cardList[i]);
 	}
-	// reset moves
+	// set Moves to 0
 	movesContainer.innerHTML = movesCounter;
+
 	//eventlistener for all Cards 
 	for (let i=0; i < cardsArray.length; i++){
 	    cards = cardsArray[i];
 	    cards.addEventListener('click', openCard);
 	}
 }
+
+
 /*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
+ * set up the event listener for a card. If a card is clicked: - done - displayCards Function
+ *  - display the card's symbol (put this functionality in another function that you call from this one) - done - openCard function
+ *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one) - done - openCard function
+ *  - if the list already has another card, check to see if the two cards match - done checkMatch function
+ *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one) - done checkMatch function
+ *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one) - done checkMatch function
+ *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one) - done checkMovesCounter
+ *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one) - done checkMatch counter
  */
 
 
-
-// init Gameboard when dom content is loaded
-document.addEventListener("DOMContentLoaded", function(event) {
-	displayCards();
-});
+/**
+* @description Game End Function
+* check the amout of moves and hide stars in rating
+* start the game timer on first call
+*/
 
 function gameEnd(){
+	// stop the timer
 	timer.stop();
+
+	// fill the modal with the actual timer values
 	seconds[1].innerHTML = formatTime(gameSeconds % 60);
 	minutes[1].innerHTML = formatTime(parseInt(gameSeconds / 60));
-	modal.style.display = "block";
+
+	// fill the modal with amout of moves
 	moves.innerHTML = movesCounter;
+
+	// clear the ratingbox
 	ratingbox.innerHTML = '';
+
+	// fill the rating box depending on the ratingCounter
 	for (let i = 0; i < ratingCounter; i++){
 		let star = document.createElement('i');
 		star.classList.add('fa', 'fa-star');
 		ratingbox.appendChild(star);
 	}
+
+	// open the modal
+	modal.style.display = "block";
 }
 
+
+/**
+* @description Rating Function
+* check the amout of moves and hide stars in rating
+* start the game timer on first call
+*/
+
 function checkRating(){
-	console.log(movesCounter);
 	if(movesCounter >= 35){
 		starsArray[0].classList.add('disabled');
 		starsArray[1].classList.add('disabled');
@@ -166,74 +196,129 @@ function checkRating(){
 	}
 }
 
+
+/**
+* @description check amount of matching cards and end the game
+*/
+
 function checkMatchCounter(){
+
+	// check amout of matching pairs
 	if(matchCounter === 8){
 		setTimeout(function(){
+
+			// call the game end
 			gameEnd();
+
 		}, 1000)
 	}
 }
 
+/**
+* @description count moves and check if Game is finished
+* increment movesCounter
+* check status of game
+*/
+
 function checkMovesCounter(){
+
+	//increment moves
 	movesCounter +=1;
+
+	// display the amout of moves
 	movesContainer.innerHTML = movesCounter;
+
+	// check if all matching pairs are open
 	checkMatchCounter();
 }
 
+
+/**
+* @description Function check if cards match
+* increment match- and movesCounter
+* push matching cards to seperate list
+* empty the list of open cards
+*/
 function checkMatch(){
-	// get content form open list elemenets
+	// store each card in a variable
 	let card_one = listOpenCards[0];
 	let card_two = listOpenCards[1];
+
+	// get the symbol of the card
 	let card_one_symbol = card_one.innerHTML;
 	let card_two_symbol = card_two.innerHTML;
+
 	// check if symbol of elements match
 	if(card_one_symbol === card_two_symbol){
+
+		// remove animation classes
 		card_one.classList.remove('animated', 'flipInY');
 		card_two.classList.remove('animated', 'flipInY');
-		// add classes to elements 
+
+		// add annimation classes to elements 
 		card_one.classList.add('match', 'animated', 'tada');
 		card_two.classList.add('match', 'animated', 'tada');
+
 		// push elements to list of matching elements
 		listMatchCards.push(card_one, card_two);
+
+		// increment matchCounter
 		matchCounter +=1;
-		// count moves
+
+		// increment movesCounter
 		checkMovesCounter();
 	}else{
+		// if cards not match reset everything
 		// timeout needed 
 		setTimeout(function(){
 			// remove classes from elements
 			card_one.classList.remove('open', 'show', 'animated', 'flipInY');
 			card_two.classList.remove('open', 'show', 'animated', 'flipInY');
+
+			// add eventlistener again
 			card_one.addEventListener('click',openCard);
 			card_two.addEventListener('click',openCard);
 		}, 1000)	
-		// count moves
+
+		// call movesCounter function
 		checkMovesCounter();
+
+		// call check Rating function
 		checkRating();
-	}	
-	// empty list
+	}
+
+	// empty list of open cards
 	listOpenCards = [];
 }
 
-function checkOpenList(){
+
+
+/**
+* @description Open Card Function
+* set classes and cal openCardList and calls check match function
+*/
+
+function openCard(target){
+	// add classes to show the card and animate it
+	target.target.classList.add('open', 'show', 'animated', 'flipInY');
+
+	//avoid double click on already open card
+	target.target.removeEventListener('click', openCard);
+
+	// push the cards to a list with open cards
+	listOpenCards.push(target.target);
+
+	// check if 2 cards are in list
 	if(listOpenCards.length === 2){
 			checkMatch();
 	}
 }
 
-function pushCardToOpenList(e){
-	listOpenCards.push(e);
-	checkOpenList();
-}
-//Open Card Functinon
-function openCard(target){
-	target.target.classList.add('open', 'show', 'animated', 'flipInY');
-	//avoid double click on already open card
-	target.target.removeEventListener('click', openCard);
-	pushCardToOpenList(target.target);
-}
+/**
+* @description Reset function
+* reset all variables and classes
+*/
 
-// set everything back to null and start the game again.
 function restartGame(){
 	modal.style.display = "none";
 	listMatchCards = [];
@@ -248,7 +333,10 @@ function restartGame(){
 	displayCards();
 }
 
-// eventlistener for reload and replay butten
+/**
+* @description Event listener
+* set event listener for reload and restart button
+*/
 reloadButton.addEventListener('click', restartGame);
 replayButton.addEventListener('click', restartGame);
 
@@ -265,6 +353,10 @@ window.onclick = function(event) {
     }
 }
 
+/**
+* @description add missing 0 in timer output
+* Credit to https://stackoverflow.com/questions/5517597/plain-count-up-timer-in-javascript
+*/
 function formatTime(val) {
   var valString = val + "";
   if (valString.length < 2) {
@@ -274,8 +366,10 @@ function formatTime(val) {
   }
 }
 
-// Credits to https://stackoverflow.com/questions/8126466/javascript-reset-setinterval-back-to-0
-// timer object
+/**
+* @description timer object
+* Credits to https://stackoverflow.com/questions/8126466/javascript-reset-setinterval-back-to-0
+*/
 
 function Timer(fn, t) {
   var timerObj = setInterval(fn, t);
@@ -303,4 +397,9 @@ function Timer(fn, t) {
      return this.stop().start();
   }
 }
+
+// init Gameboard when dom content is loaded
+document.addEventListener("DOMContentLoaded", function(event) {
+	displayCards();
+});
 
