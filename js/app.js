@@ -62,15 +62,7 @@ let seconds = document.querySelectorAll('.seconds');
 const ratingbox = document.querySelector('.ratingbox');
 
 // start and end time variables
-let startTime, endTime;
-
-let timer = new Timer(function() {
-	++gameSeconds;
-	seconds[0].innerHTML = formatTime(gameSeconds % 60);
-	minutes[0].innerHTML = formatTime(parseInt(gameSeconds / 60));
-}, 1000);
-
-
+let startTime, endTime, timer;
 
 /*
  * Display the cards on the page
@@ -95,8 +87,6 @@ function shuffle(array) {
 }
 
 const displayCards = function(){
-	//timer.start();
-	const sT = performance.now();
 	// schuffel the card array
 	let cardList = shuffle(cardsArray);
 	// delete the innerHTML of the deck
@@ -109,14 +99,11 @@ const displayCards = function(){
 	}
 	// reset moves
 	movesContainer.innerHTML = movesCounter;
-
 	//eventlistener for all Cards 
 	for (let i=0; i < cardsArray.length; i++){
 	    cards = cardsArray[i];
 	    cards.addEventListener('click', openCard);
 	}
-	const eT = performance.now();
-	console.log(eT);
 }
 /*
  * set up the event listener for a card. If a card is clicked:
@@ -129,11 +116,14 @@ const displayCards = function(){
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
-// helper
-displayCards();
+
+
+// init Gameboard when dom content is loaded
+document.addEventListener("DOMContentLoaded", function(event) {
+	displayCards();
+});
 
 function gameEnd(){
-	// stop the timer
 	timer.stop();
 	seconds[1].innerHTML = formatTime(gameSeconds % 60);
 	minutes[1].innerHTML = formatTime(parseInt(gameSeconds / 60));
@@ -154,22 +144,25 @@ function checkRating(){
 		starsArray[1].classList.add('disabled');
 		starsArray[2].classList.add('disabled');	
 		ratingCounter = 0;
-		console.log('schlecht')
 	}
 	if(movesCounter >= 24 && movesCounter <=35){
 		starsArray[0].classList.add('disabled');
 		starsArray[1].classList.add('disabled');
 		ratingCounter = 1;
-		console.log('im rahmen');
 	}
 	if(movesCounter <= 24 && movesCounter >= 15){
 		starsArray[0].classList.add('disabled');
 		ratingCounter = 2;
-		console.log('mitte');
 	}
 	if(movesCounter >= 8 && movesCounter <= 15){
 		ratingCounter = 3;
-		console.log('super');
+	}
+	if(movesCounter === 1){
+		timer = new Timer(function() {
+			++gameSeconds;
+			seconds[0].innerHTML = formatTime(gameSeconds % 60);
+			minutes[0].innerHTML = formatTime(parseInt(gameSeconds / 60));
+		}, 1000);
 	}
 }
 
@@ -245,10 +238,13 @@ function restartGame(){
 	modal.style.display = "none";
 	listMatchCards = [];
 	listOpenCards = [];
+	starsArray[0].classList.remove('disabled');
+	starsArray[1].classList.remove('disabled');
+	starsArray[2].classList.remove('disabled');	
 	movesCounter = 0;
 	matchCounter = 0;
-	timer.reset(1000);
 	gameSeconds = 0;
+	timer.stop();
 	displayCards();
 }
 
@@ -277,6 +273,9 @@ function formatTime(val) {
     return valString;
   }
 }
+
+// Credits to https://stackoverflow.com/questions/8126466/javascript-reset-setinterval-back-to-0
+// timer object
 
 function Timer(fn, t) {
   var timerObj = setInterval(fn, t);
