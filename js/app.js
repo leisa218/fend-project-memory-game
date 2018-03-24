@@ -190,22 +190,16 @@ function gameEnd(){
 */
 
 function checkRating(){
-	if(movesCounter >= 35){
+	if(movesCounter >= 48){
 		starsArray[0].classList.add('disabled');
-		starsArray[1].classList.add('disabled');
-		starsArray[2].classList.add('disabled');	
-		ratingCounter = 0;
-	}
-	if(movesCounter >= 24 && movesCounter <=35){
-		starsArray[0].classList.add('disabled');
-		starsArray[1].classList.add('disabled');
+		starsArray[1].classList.add('disabled');	
 		ratingCounter = 1;
 	}
-	if(movesCounter <= 24 && movesCounter >= 15){
+	if(movesCounter >= 24 && movesCounter <=48){
 		starsArray[0].classList.add('disabled');
 		ratingCounter = 2;
 	}
-	if(movesCounter >= 8 && movesCounter <= 15){
+	if(movesCounter >= 8 && movesCounter <= 24){
 		ratingCounter = 3;
 	}
 	if(movesCounter === 1){
