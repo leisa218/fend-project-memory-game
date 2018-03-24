@@ -65,6 +65,9 @@ const ratingbox = document.querySelector('.ratingbox');
 // start and end time variables
 let startTime, endTime, timer;
 
+// check firstTime run for timer
+let firstTime = true;
+
 
 /**
  * @description: Check if device has touchsupport
@@ -202,13 +205,6 @@ function checkRating(){
 	if(movesCounter >= 8 && movesCounter <= 24){
 		ratingCounter = 3;
 	}
-	if(movesCounter === 1){
-		timer = new Timer(function() {
-			++gameSeconds;
-			seconds[0].innerHTML = formatTime(gameSeconds % 60);
-			minutes[0].innerHTML = formatTime(parseInt(gameSeconds / 60));
-		}, 1000);
-	}
 }
 
 
@@ -319,6 +315,8 @@ function checkMatch(){
 */
 
 function openCard(target){
+	//initialize the timer on first call of function openCard
+	initTimer();
 	// add classes to show the card and animate it
 	target.target.classList.add('open', 'show', 'animated', 'flipInY');
 
@@ -352,6 +350,7 @@ function restartGame(){
 	timer.stop();
 	seconds[0].innerHTML = '00';
 	minutes[0].innerHTML = '00';
+	firstTime = true;
 	displayCards();
 }
 
@@ -381,6 +380,25 @@ function formatTime(val) {
 }
 
 /**
+* @description first run detection
+* - checks global Variable for first run
+* - if true timer will be initializised on firt card click
+* - global var will be resetted on reload, replay game
+*/
+
+var initTimer = function () {
+  if (firstTime){
+    firstTime = false;
+		timer = new Timer(function() {
+			++gameSeconds;
+			seconds[0].innerHTML = formatTime(gameSeconds % 60);
+			minutes[0].innerHTML = formatTime(parseInt(gameSeconds / 60));
+		}, 1000);
+  }
+};
+
+
+/**
 * @description timer object
 * Credits to https://stackoverflow.com/questions/8126466/javascript-reset-setinterval-back-to-0
 */
@@ -408,7 +426,7 @@ function Timer(fn, t) {
   // start with new interval, stop current interval
   this.reset = function(newT) {
     t = newT;
-     return this.stop().start();
+     return this.stop();
   }
 }
 
