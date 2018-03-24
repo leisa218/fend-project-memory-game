@@ -66,8 +66,10 @@ const ratingbox = document.querySelector('.ratingbox');
 let startTime, endTime, timer;
 
 
-//https://gist.github.com/evu/9739512
-
+/**
+ * @description: Check if device has touchsupport
+ *   - Credits: https://gist.github.com/evu/9739512
+ */
 function isTouchDevice(){
 		return true == ("ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch);
 }
