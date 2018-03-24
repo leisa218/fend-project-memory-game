@@ -14,23 +14,12 @@ What things you need to install the software and how to install them
 none - just load the game in the Browser - Javascript must be enabled.
 ```
 
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-
 ## Authors
 
-* **Natalie Klinke** - *Initial work* - [Udacity](https://github.com/PurpleBooth)
+* **Natalie Klinke** - *Initial work* - [Udacity](https://github.com/udacity/fend-project-memory-game)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+* This is the 3rd Project in the Nanodegree Frontend
+* Focus was soulution build in JS
