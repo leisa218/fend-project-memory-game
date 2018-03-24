@@ -160,3 +160,61 @@ h1 {
     text-decoration: none;
     cursor: pointer;
 }
+
+/*
+ * Media Querys
+ */
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    body{
+        background:orange;
+    }
+    .deck{
+        width:295px;
+        min-height: 305px;
+    }
+    .deck .card {
+        height:55px;
+        width:55px;
+    }
+    .score-panel{
+        width:250px;
+    }   
+} 
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+    body{
+        background:yellow;
+    }
+    .deck{
+        width:580px;
+        min-height: 595px;
+    }
+} 
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+    body{
+        background:green;
+    }
+    .deck{
+        width: 660px;
+        min-height: 680px;
+    }
+} 
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+    body{
+        background:blue;
+    }
+} 
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+    body{
+        background:red;
+    }
+}

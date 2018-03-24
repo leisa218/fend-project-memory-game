@@ -65,6 +65,12 @@ const ratingbox = document.querySelector('.ratingbox');
 // start and end time variables
 let startTime, endTime, timer;
 
+
+//https://gist.github.com/evu/9739512
+
+function isTouchDevice(){
+		return true == ("ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch);
+}
 /**
  * @description: Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -112,8 +118,21 @@ const displayCards = function(){
 
 	//eventlistener for all Cards 
 	for (let i=0; i < cardsArray.length; i++){
-	    cards = cardsArray[i];
-	    cards.addEventListener('click', openCard);
+	  cards = cardsArray[i];
+	  if (isTouchDevice()){
+    	cards.addEventListener("touchstart", openCard);
+  	}else{
+    	cards.addEventListener('click', openCard);
+  	}
+	}
+
+	// eventlistener for reload and replay button
+  if (isTouchDevice()){
+		reloadButton.addEventListener('touchstart', restartGame);
+		replayButton.addEventListener('touchstart', restartGame);
+	}else{
+		reloadButton.addEventListener('click', restartGame);
+		replayButton.addEventListener('click', restartGame);
 	}
 }
 
@@ -276,8 +295,13 @@ function checkMatch(){
 			card_two.classList.remove('open', 'show', 'animated', 'flipInY');
 
 			// add eventlistener again
-			card_one.addEventListener('click',openCard);
-			card_two.addEventListener('click',openCard);
+		  if (isTouchDevice()){
+				card_one.addEventListener('touchstart',openCard);
+				card_two.addEventListener('touchstart',openCard);
+	  	}else{
+	    	card_one.addEventListener('click',openCard);
+				card_two.addEventListener('click',openCard);
+	  	}
 		}, 1000)	
 
 		// call movesCounter function
@@ -332,14 +356,6 @@ function restartGame(){
 	timer.stop();
 	displayCards();
 }
-
-/**
-* @description Event listener
-* set event listener for reload and restart button
-*/
-reloadButton.addEventListener('click', restartGame);
-replayButton.addEventListener('click', restartGame);
-
 
 // When the user clicks on <span> (x), close the modal
 close.onclick = function() {
