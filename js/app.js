@@ -350,6 +350,8 @@ function restartGame(){
 	matchCounter = 0;
 	gameSeconds = 0;
 	timer.stop();
+	seconds[0].innerHTML = '00';
+	minutes[0].innerHTML = '00';
 	displayCards();
 }
 
